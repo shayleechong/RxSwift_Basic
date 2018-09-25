@@ -6,6 +6,7 @@
 //  Copyright © 2018 Shaylee Chong. All rights reserved.
 //
 import Foundation
+import RxDataSources
 
 class Album : Decodable {
     
@@ -41,5 +42,25 @@ class Album : Decodable {
         self.thumbnailUrl = thumbnailUrl
     }
     
+    
+}
+
+struct SectionOfAlbums {
+    var header: String
+    var items: [Item]
+}
+
+extension SectionOfAlbums: SectionModelType{
+    typealias Item = Album
+    
+    init(original: SectionOfAlbums, items: [Item]) {
+        self = original
+        self.items = items
+    }
+    
+    init(items: [Item]){
+        self.header = "1"
+        self.items = items
+    }
     
 }

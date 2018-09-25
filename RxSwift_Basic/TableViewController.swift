@@ -9,6 +9,8 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxDataSources
+
 
 class TableViewController: UIViewController{
     
@@ -22,9 +24,25 @@ class TableViewController: UIViewController{
         
         tableViewModel.loadAlbums()
         
-        tableViewModel.albums
-                      .
+        let dataSource = RxTableViewSectionedReloadDataSource<SectionOfAlbums>(
+                            configureCell: { dataSource, tableView, indexPath, album in
+                                                let cell = tableView.dequeueReusableCell(withIdentifier: "albumCell", for: indexPath) as! AlbumTableViewCell
+                                
+                                                cell.downloadImage(url: album.url)
+                                                cell.albumTitleLabel.text = album.title
+                                                cell.albumIdLabel.text = String(album.id)
+                                                cell.albumInvIdLabel.text = String(album.albumId)
+
+                                                return cell
+                                            }
+                         )
         
+        tableViewModel.sections
+                      .bind(to: tableView.rx.items(dataSource: dataSource))
+                      .disposed(by: disposeBag)
+        
+        
+
         
     }
 

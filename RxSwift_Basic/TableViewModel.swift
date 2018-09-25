@@ -13,6 +13,8 @@ class TableViewModel {
     
     var albums = BehaviorRelay<[Album]>(value: [])
     
+    var sections = BehaviorRelay<[SectionOfAlbums]>(value: [])
+    
     static let shared = TableViewModel()
     
     private var disposeBag = DisposeBag()
@@ -26,7 +28,11 @@ extension TableViewModel {
         
         loadAlbum { albums in
             albums.subscribe(onNext: { album in
+                
                         self.albums.accept(album)
+            
+                        self.sections.accept([SectionOfAlbums(items: album)])
+                
                   }, onError: { err in
                         print(err.localizedDescription)
                   }, onCompleted: {
